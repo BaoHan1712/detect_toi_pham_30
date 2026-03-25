@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behavioral Risk Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-scan {
+            animation: scan 1.5s ease-in-out infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        body {
+            background-color: #050B14;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen text-slate-300 font-sans relative overflow-hidden flex items-center justify-center p-6">
+        <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-blue-900/30 blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[30vw] h-[30vw] rounded-full bg-cyan-600/20 blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-[40%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent pointer-events-none"></div>
+
+        <div class="w-full max-w-6xl z-10 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="col-span-1 lg:col-span-12 flex items-center space-x-4 mb-4">
+                <div class="p-3 bg-cyan-950/50 rounded-xl border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                    <i class="fas fa-brain text-cyan-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
+                        Behavioral Risk <span class="text-cyan-400">Engine</span>
+                    </h1>
+                    <p class="text-sm text-cyan-200/60 uppercase tracking-widest mt-1">Hệ chuyên gia dựa trên luật</p>
+                </div>
+            </div>
+
+            <div class="col-span-1 lg:col-span-5 flex flex-col gap-5">
+                <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-600 to-blue-500 opacity-50"></div>
+                    <h2 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-cyan-400"></i> Feature Inputs
+                    </h2>
+
+                    <div class="space-y-5">
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-user text-xs"></i> Nhóm tuổi
+                            </label>
+                            <select id="ageGroup" class="w-full bg-slate-800/50 border border-slate-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 p-2.5 transition-all outline-none">
+                                <option value="teen">Vị thành niên (Dưới 18)</option>
+                                <option value="adult" selected>Trưởng thành (18 - 50)</option>
+                                <option value="senior">Cao tuổi (Trên 50)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-brain text-xs"></i> Trình độ học vấn
+                            </label>
+                            <select id="education" class="w-full bg-slate-800/50 border border-slate-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 p-2.5 transition-all outline-none">
+                                <option value="high" selected>Đại học / Bậc cao</option>
+                                <option value="low">Trung học / Cấp 2, 3</option>
+                                <option value="none">Không có học vấn</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-briefcase text-xs"></i> Tình trạng việc làm
+                            </label>
+                            <select id="employment" class="w-full bg-slate-800/50 border border-slate-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 p-2.5 transition-all outline-none">
+                                <option value="employed" selected>Có việc làm ổn định</option>
+                                <option value="unstable">Lao động tự do / Bấp bênh</option>
+                                <option value="unemployed">Thất nghiệp dài hạn</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-map-pin text-xs"></i> Môi trường sống
+                            </label>
+                            <select id="environment" class="w-full bg-slate-800/50 border border-slate-600/50 text-white text-sm rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 p-2.5 transition-all outline-none">
+                                <option value="safe" selected>Khu vực an ninh tốt</option>
+                                <option value="moderate">Khu vực trung bình</option>
+                                <option value="high_risk">Khu vực phức tạp / Tệ nạn</option>
+                            </select>
+                        </div>
+
+                        <div class="pt-2 space-y-3 border-t border-slate-700/50">
+                            <label class="flex items-center space-x-3 cursor-pointer group">
+                                <input type="checkbox" id="history" class="w-4 h-4 accent-cyan-500">
+                                <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Tiền án/tiền sự hoặc GĐ có người phạm tội</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer group">
+                                <input type="checkbox" id="substance" class="w-4 h-4 accent-red-500">
+                                <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Lạm dụng chất kích thích / ma túy</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="calculateBtn" onclick="calculateRisk()" class="mt-8 w-full relative overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] flex justify-center items-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed">
+                        <i class="fas fa-brain"></i>
+                        <span id="btnText">Khởi chạy Inference Engine</span>
+                        <div class="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-[100%] transition-all duration-700"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-span-1 lg:col-span-7 flex flex-col gap-6">
+                <div id="resultCard" class="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 min-h-[250px]">
+                    <div id="scanLine" class="absolute top-0 left-0 w-full h-1 bg-cyan-400 shadow-[0_0_15px_#22d3ee] hidden animate-scan"></div>
+                    <div class="text-center opacity-50 flex flex-col items-center">
+                        <i class="fas fa-shield text-slate-500 text-6xl mb-4"></i>
+                        <p class="text-sm uppercase tracking-widest">Hệ thống đang chờ dữ liệu đầu vào</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 flex-grow flex flex-col relative">
+                    <h3 class="text-sm font-semibold text-cyan-300 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                        <i class="fas fa-chart-line text-xs"></i> Inference Trace Log
+                    </h3>
+                    <div id="traceLog" class="flex-grow bg-[#020617] rounded-xl border border-slate-800 p-4 font-mono text-xs overflow-y-auto custom-scrollbar">
+                        <span class="text-slate-600">// Waiting for execution...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isCalculating = false;
+
+        function getFormData() {
+            return {
+                ageGroup: document.getElementById('ageGroup').value,
+                education: document.getElementById('education').value,
+                employment: document.getElementById('employment').value,
+                environment: document.getElementById('environment').value,
+                history: document.getElementById('history').checked,
+                substance: document.getElementById('substance').checked
+            };
+        }
+
+        async function calculateRisk() {
+            if (isCalculating) return;
+            isCalculating = true;
+            const btn = document.getElementById('calculateBtn');
+            btn.disabled = true;
+            document.getElementById('btnText').textContent = 'Đang phân tích tập luật...';
+            document.getElementById('scanLine').classList.remove('hidden');
+
+            const formData = getFormData();
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                setTimeout(() => {
+                    displayResult(data.risk, data.level, formData);
+                    isCalculating = false;
+                    btn.disabled = false;
+                    document.getElementById('btnText').textContent = 'Khởi chạy Inference Engine';
+                    document.getElementById('scanLine').classList.add('hidden');
+                }, 1500);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra: ' + error.message);
+                isCalculating = false;
+                btn.disabled = false;
+                document.getElementById('btnText').textContent = 'Khởi chạy Inference Engine';
+                document.getElementById('scanLine').classList.add('hidden');
+            }
+        }
+
+        function displayResult(score, level, formData) {
+            const resultCard = document.getElementById('resultCard');
+            let colorClass = 'text-green-400';
+            let shadowClass = 'shadow-[0_0_30px_rgba(74,222,128,0.5)]';
+
+            if (score >= 70) {
+                colorClass = 'text-red-500';
+                shadowClass = 'shadow-[0_0_30px_rgba(239,68,68,0.7)]';
+            } else if (score >= 40) {
+                colorClass = 'text-yellow-400';
+                shadowClass = 'shadow-[0_0_20px_rgba(250,204,21,0.5)]';
+            }
+
+            resultCard.className = `bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 ${shadowClass} min-h-[250px]`;
+
+            resultCard.innerHTML = `
+                <div class="text-center z-10 w-full">
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-widest mb-2">Xác suất rủi ro dự đoán</p>
+                    <div class="flex justify-center items-end gap-2 mb-2">
+                        <span class="text-7xl font-black ${colorClass} tracking-tighter tabular-nums">0</span>
+                        <span class="text-3xl font-bold pb-2 ${colorClass}">%</span>
+                    </div>
+                    <div class="mt-4 inline-block px-4 py-1.5 rounded-full bg-slate-800 border border-slate-600">
+                        <span class="text-sm font-bold uppercase tracking-widest ${colorClass}">Cấp độ: ${level}</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2 mt-8 rounded-full overflow-hidden">
+                        <div class="h-full transition-all duration-1000 ease-out ${score >= 70 ? 'bg-red-500' : score >= 40 ? 'bg-yellow-400' : 'bg-green-400'}" style="width: 0%"></div>
+                    </div>
+                </div>
+            `;
+
+            const scoreElement = resultCard.querySelector('.text-7xl');
+            const progressBar = resultCard.querySelector('[style*="width"]');
+            animateScore(scoreElement, progressBar, score);
+            updateTraceLog(formData, score);
+        }
+
+        function animateScore(element, progressBar, target) {
+            let current = 0;
+            const interval = setInterval(() => {
+                current += Math.ceil(target / 50);
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+                }
+                element.textContent = current;
+                progressBar.style.width = current + '%';
+            }, 20);
+        }
+
+        function updateTraceLog(formData, finalScore) {
+            const traceLog = document.getElementById('traceLog');
+            let logs = ['/* Bắt đầu phân tích. Base risk = 5% */'];
+
+            if (formData.ageGroup === 'teen') {
+                logs.push('IF Age == "Vị thành niên" THEN +15%');
+            } else if (formData.ageGroup === 'adult') {
+                logs.push('IF Age == "Trưởng thành" THEN +5%');
+            }
+
+            if (formData.education === 'none') {
+                logs.push('IF Education == "Không" THEN +20%');
+            } else if (formData.education === 'low') {
+                logs.push('IF Education == "Cấp 2/Cấp 3" THEN +10%');
+            }
+
+            if (formData.employment === 'unemployed') {
+                logs.push('IF Employment == "Thất nghiệp" THEN +25%');
+            } else if (formData.employment === 'unstable') {
+                logs.push('IF Employment == "Bấp bênh" THEN +15%');
+            }
+
+            if (formData.environment === 'high_risk') {
+                logs.push('IF Environment == "Phức tạp" THEN +20%');
+            } else if (formData.environment === 'moderate') {
+                logs.push('IF Environment == "Trung bình" THEN +10%');
+            }
+
+            if (formData.history) {
+                logs.push('IF FamilyHistory == TRUE THEN +25%');
+            }
+
+            if (formData.substance) {
+                logs.push('IF SubstanceAbuse == TRUE THEN +30%');
+            }
+
+            logs.push('=> TỔNG HỢP KẾT QUẢ: ' + finalScore + '%');
+            traceLog.innerHTML = logs.map((log, i) => `<div class="animate-fade-in" style="animation-delay: ${i * 150}ms">${log}</div>`).join('');
+        }
+    </script>
+</body>
+</html>
